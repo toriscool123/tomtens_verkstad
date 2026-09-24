@@ -1,51 +1,22 @@
-using System;
-using System.Windows;
-using MySql.Data.MySqlClient; // Kräver NuGet-paketet MySql.Data
+<Window x:Class="tomtens_verkstad.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:tomtens_verkstad"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <StackPanel Margin="20">
+            <Button Content="Anslut och Hämta/Skapa" 
+            Click="BtnConnect_Click" 
+            Padding="10" 
+            FontSize="16" />
 
-namespace tomtens_verkstad
-{
-    public partial class MainWindow : Window
-    {
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
-
-        private async void BtnConnect_Click(object sender, RoutedEventArgs e)
-        {
-            // Glöm inte att lägga till Database=namn!
-            string connectionString = "Server=192.168.216.122;Port=3306;Database=tomtens_verkstad;User ID=root;Password=hemligt-losenord;";
-
-            try
-            {
-                using (var connection = new MySqlConnection(connectionString))
-                {
-                    await connection.OpenAsync();
-
-                    PersonListBox.Items.Clear();
-                    string selectQuery = "SELECT * FROM Land;";
-
-                    using (var cmd = new MySqlCommand(selectQuery, connection))
-                    {
-                        using (var reader = await cmd.ExecuteReaderAsync())
-                        {
-                            // Loopa igenom alla rader som hittas i tabellen
-                            while (await reader.ReadAsync())
-                            {
-                                // Ändra "Namn" eller index [0] till kolumnnamnet du vill visa
-                                string landNamn = reader["Namn"].ToString();
-                                PersonListBox.Items.Add(landNamn);
-                            }
-                        }
-                    }
-                }
-
-                MessageBox.Show("datig fungerat!", "BOOM", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ett fel uppstod: {ex.Message}", "Fel", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-    }
-}
+            <ListBox x:Name="PersonListBox" 
+             Margin="0,20,0,0" 
+             Height="200" 
+             FontSize="14"/>
+        </StackPanel>
+    </Grid>
+</Window>
